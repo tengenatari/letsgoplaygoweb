@@ -2,23 +2,47 @@
 
 {% block body %}
     <div class="row justify-content-center">
-    <form class="row g-3 w-50  align-middle" action="/auth">
+    <form class="row g-3 w-50  align-middle" action="/auth" method="POST">
         {% csrf_token %}
         <div class="form-floating col-md-6">
             {{ form.username }}
-            <label for="{{ form.username.auto_id }}" class="floatingInputGrid">Введите ник</label>
+            {% if form.username.errors %}
+                {% for error in form.username.errors %}
+                    <label for="{{ form.username.auto_id }}">{{ error }}</label>  
+                {% endfor %}
+            {% else %}
+                <label for="{{ form.username.auto_id }}" class="floatingInputGrid">Введите ник</label>
+            {% endif %}
         </div>
         <div class="form-floating col-md-6">
             {{ form.email }}
-            <label for="{{ form.email.auto_id }}" class="floatingInputGrid">Введите почту</label>   
+            {% if form.email.errors %}
+                {% for error in form.email.errors %}
+                    <label for="{{ form.email.auto_id }}">{{ error }}</label>  
+                {% endfor %}
+            {% else %}
+                <label for="{{ form.email.auto_id }}" class="floatingInputGrid">Введите почту</label>
+            {% endif %}
         </div>
         <div class="form-floating col-12">
             {{ form.password1 }}
-            <label for="{{ form.password1.auto_id }}" class="floatingInputGrid">Введите пароль</label>
+            {% if form.password1.errors %}
+                {% for error in form.password1.errors %}
+                    <label for="{{ form.password1.auto_id }}">{{ error }}</label>  
+                {% endfor %}
+            {% else %}
+                <label for="{{ form.password1.auto_id }}" class="floatingInputGrid">Введите пароль</label>
+            {% endif %}
         </div>
         <div class="form-floating col-12">
             {{ form.password2 }}
-            <label for="{{ form.password2.auto_id }}" class="floatingInputGrid">Подтвердите пароль</label>
+            {% if form.password2.errors %}
+                {% for error in form.password2.errors %}
+                    <label for="{{ form.password2.auto_id }}">{{ error }}</label>  
+                {% endfor %}
+            {% else %}
+                <label for="{{ form.password2.auto_id }}" class="floatingInputGrid">Подтвердите пароль</label>
+            {% endif %}
         </div>
         <div class="col-12">
             <button type="submit" class="btn btn-primary">Зарегистрироваться</button>
