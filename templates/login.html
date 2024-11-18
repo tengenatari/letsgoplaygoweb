@@ -5,11 +5,11 @@
     <div class="row justify-content-center">
     
     
-    <form class="row g-3 w-50  align-middle" action="/login" method="POST">
+    <form class="row g-3 align-middle" action="/login" method="POST">
         {% csrf_token %}
         
         {% for field in form %}   
-            <div class="form-floating col-12">
+            <div class="form-floating col-sm-12">
                 {{ field }}
                 
                 {% for error in field.errors %}
