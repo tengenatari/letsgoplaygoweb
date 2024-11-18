@@ -7,26 +7,20 @@
     
     <form class="row g-3 w-50  align-middle" action="/login" method="POST">
         {% csrf_token %}
-        <div class="form-floating col-md-12">
-            {{ form.username }}
-            {% if form.username.errors %}
-                {% for error in form.username.errors %}
-                    <label for="{{ form.username.auto_id }}">{{ error }}</label>  
-                {% endfor %}
-            {% else %}
-                <label for="{{ form.username.auto_id }}" class="floatingInputGrid">Введите ник</label>
-            {% endif %}
-        </div>
-        <div class="form-floating col-12">
-            {{ form.password }}
-            {% if form.password.errors %}
-                {% for error in form.password.errors %}
+        
+        {% for field in form %}   
+            <div class="form-floating col-12">
+                {{ field }}
+                
+                {% for error in field.errors %}
                     <label for="{{ form.password.auto_id }}">{{ error }}</label>  
                 {% endfor %}
-            {% else %}
-                <label for="{{ form.password.auto_id }}" class="floatingInputGrid">Введите пароль</label>
-            {% endif %}
-        </div>
+                
+                    <label for="{{ form.password.auto_id }}" class="floatingInputGrid">{{ field.label }}</label>
+               
+            </div>
+        {% endfor %}
+        <div class="form-floating col-12"> </div>
         <div class="col-12">
             <button type="submit" class="btn btn-primary">Войти</button>
         </div>

@@ -17,11 +17,12 @@ class UserForm(UserCreationForm):
 
 
 class LoginForm(AuthenticationForm):
-    def __init__(self, *args, **kwargs):
-        super(LoginForm, self).__init__(*args, **kwargs)
-        for field in self.fields:
-            self.fields[field].widget.attrs = {'class': 'form-control'}
+    username = forms.CharField(label='Логин', widget=forms.TextInput(attrs={'class': 'form-control'}))
+    password = forms.CharField(label='Пароль', widget=forms.PasswordInput(attrs={'class': 'form-control'}))
+
+    def confirm_login_allowed(self, user):
+        pass
 
     class Meta:
         model = User
-        fields = ['username', 'password']
+        fields = ('username', 'password')
