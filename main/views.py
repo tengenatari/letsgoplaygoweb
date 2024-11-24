@@ -1,9 +1,9 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
-from .forms import UserForm, LoginForm
+from .forms import *
 from django.http import HttpResponse
-
+from .models import *
 
 def main(request):
     return render(request, 'base.html')
@@ -45,3 +45,20 @@ def login_user(request):
 def logout_view(request):
     logout(request)
     return redirect('/')
+
+
+def create_movie(request):
+    movie_form = Forms(Movie).form
+    return render(request, 'movie.html', context={"form":movie_form, "URL": '/movie/add'})
+
+def create_genre(request):
+    genre_form = Forms(Genre).form()
+    if request.method == "POST":
+        genre_form = Forms(Genre).form(data=request.POST)
+        print(genre_form.is_valid())
+        if genre_form.is_valid():
+            genre_form.save(commit=True)
+            return render(request, 'success.html')
+
+    return render(request, 'movie.html', context={"form":genre_form, "URL": '/genre/add'})
+

@@ -2,6 +2,7 @@
 
 {% block body %}
     <div class="row justify-content-center">
+        <div class="row justify-content-center">
     <form class="row g-3 w-50  align-middle" action="/auth" method="POST">
         {% csrf_token %}
         <div class="form-floating col-md-6">
@@ -52,5 +53,5 @@
     
     </form>
    </div>
-    
+    </div>
 {% endblock body %}
