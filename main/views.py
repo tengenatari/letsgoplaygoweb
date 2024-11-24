@@ -5,6 +5,7 @@ from .forms import *
 from django.http import HttpResponse
 from .models import *
 
+
 def main(request):
     return render(request, 'base.html')
 
@@ -49,16 +50,20 @@ def logout_view(request):
 
 def create_movie(request):
     movie_form = Forms(Movie).form
-    return render(request, 'movie.html', context={"form":movie_form, "URL": '/movie/add'})
+    return render(request, 'movie.html', context={"form": movie_form, "URL": '/movie/add'})
 
-def create_genre(request):
-    genre_form = Forms(Genre).form()
+
+def create_model(request, str_model):
+    print(str_model)
+    model = {"movie": Movie, "genre": Genre, "client": Client, "row": Row, "session": Session, "hall": Hall}[str_model]
+    form_model = Forms(model).form()
     if request.method == "POST":
-        genre_form = Forms(Genre).form(data=request.POST)
-        print(genre_form.is_valid())
-        if genre_form.is_valid():
-            genre_form.save(commit=True)
+        print(str_model)
+        form_model = Forms(model).form(data=request.POST)
+        if form_model.is_valid():
+            print(str_model)
+            form_model.save(commit=True)
             return render(request, 'success.html')
 
-    return render(request, 'movie.html', context={"form":genre_form, "URL": '/genre/add'})
+    return render(request, 'movie.html', context={"form": form_model, "URL": f'/raw/{str_model}/add'})
 

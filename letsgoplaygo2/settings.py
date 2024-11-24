@@ -78,7 +78,7 @@ WSGI_APPLICATION = 'letsgoplaygo2.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'DB10',
+        'NAME': 'trbd',
         'USER': 'postgres',
         'PASSWORD': 'postgres',
         'HOST': '127.0.0.1',

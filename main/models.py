@@ -5,9 +5,11 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 # Create your models here.
 
+
 class Client(AbstractUser):
     name = models.CharField(blank=True, null=True, default="")
     birthday = models.DateField(blank=True, null=True, default=NoneType)
+
 
 class Genre(models.Model):
     genre_id = models.AutoField(primary_key=True, null=False, unique=True)
@@ -16,6 +18,7 @@ class Genre(models.Model):
 
     def __str__(self):
         return self.genre_title.__str__()
+
 
 class Movie(models.Model):
     genre_id = models.AutoField(primary_key=True, null=False, unique=True)
@@ -44,7 +47,6 @@ class Row(models.Model):
             models.CheckConstraint(check=models.Q(num_seats__gte=1), name="num_seats_gte_1")
         ]
 
-
     hall_id = models.ForeignKey(Hall, null=False, on_delete=models.PROTECT)
 
 
@@ -62,12 +64,13 @@ class Session(models.Model):
     hall_id = models.ForeignKey(Hall, null=False, on_delete=models.PROTECT)
     movie_id = models.ForeignKey(Movie, null=False, on_delete=models.PROTECT)
 
+
 class Ticket(models.Model):
     ticket_id = models.AutoField(primary_key=True, null=False, unique=True)
 
     purchase_time = models.DateTimeField(null=False)
     row = models.PositiveIntegerField(null=False)
-    seat= models.PositiveIntegerField(null=False)
+    seat = models.PositiveIntegerField(null=False)
 
     class Meta:
         constraints = [
@@ -76,5 +79,5 @@ class Ticket(models.Model):
         ]
 
     client_id = models.ForeignKey(Client, null=False, on_delete=models.PROTECT)
-
+    session_id = models.ForeignKey(Session, null=False, on_delete=models.PROTECT)
 

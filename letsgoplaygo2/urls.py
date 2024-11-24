@@ -24,7 +24,6 @@ urlpatterns = [
     path('auth', views.auth, name='auth'),
     path('login', views.login_user, name='login'),
     path('logout/', views.logout_view, name='logout'),
-    path('genre/add', views.create_genre, name='CreateGenre'),
-    path('movie/add', views.create_movie, name='CreateMovie')
+    path('raw/<str:str_model>/add', views.create_model, name='CreateModel')
 
 ]
