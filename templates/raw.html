@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+
+{% block body %}
+    <form class="row col-sm-12 g-3 align-middle p-auto row justify-content-center border" action="{{ URL }}" method="POST">
+    {% csrf_token %}
+        {{ form }}
+        <button class="btn btn-primary" type="submit">Отправить</button>
+    </form>
+{% endblock body %}

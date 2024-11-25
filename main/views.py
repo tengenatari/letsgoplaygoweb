@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from .forms import *
 from django.http import HttpResponse
+from django.core.paginator import Paginator
 from .models import *
 
 
@@ -48,13 +49,26 @@ def logout_view(request):
     return redirect('/')
 
 
-def create_movie(request):
-    movie_form = Forms(Movie).form
-    return render(request, 'movie.html', context={"form": movie_form, "URL": '/movie/add'})
+def save_create_movie(request, page=1):
+    paginator = Paginator(Movie.objects.all(), 10)
+
+    if request.method == 'POST':
+        if request['type'] == 'delete':
+            Movie.objects.filter(pk__in=request.POST['movie']).delete().save()
+
+
+    response = {
+        "data": paginator.get_page(page),
+        "num_page": page,
+        "pages": paginator.page_range
+
+    }
+
+    return render(request, 'movie.html', context=response)
 
 
 def create_model(request, str_model):
-    print(str_model)
+    print(request.__dict__)
     model = {"movie": Movie, "genre": Genre, "client": Client, "row": Row, "session": Session, "hall": Hall}[str_model]
     form_model = Forms(model).form()
     if request.method == "POST":
@@ -65,5 +79,5 @@ def create_model(request, str_model):
             form_model.save(commit=True)
             return render(request, 'success.html')
 
-    return render(request, 'movie.html', context={"form": form_model, "URL": f'/raw/{str_model}/add'})
+    return render(request, 'raw.html', context={"form": form_model, "URL": f'/raw/{str_model}/add'})
 

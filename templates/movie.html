@@ -1,9 +1,38 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
 
 {% block body %}
-    <form class="row col-sm-12 g-3 align-middle p-auto row justify-content-center border" action="{{ URL }}" method="POST">
     {% csrf_token %}
-        {{ form }}
-        <button class="btn btn-primary"type="submit">Отправить</button>
-    </form>
+    <table class="table movie">
+        <thead>
+            <tr>
+              <th scope="col">Номер</th>
+              <th scope="col">Название</th>
+              <th scope="col">Дата выхода</th>
+              <th scope="col">Возрастное ограничение</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for movie in data %}
+                <tr id="Movie{{ movie.movie_id }}">
+                    <th scope="row">1</th>
+                    <td>{{ movie.movie_title }}</td>
+                    <td>{{ movie.release_date }}</td>
+                    <td>{{ movie.age_limit }}</td>
+                    <td> 
+                        <form>
+                            {% csrf_token %}
+                            <input name="id" type="hidden" value="{{ movie.movie_id }}">
+                            <button class="btn btn-danger" value="Movie{{ movie.movie_id }}" type="button">Удалить</button>
+                        
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+
+    </table>
+
+
+
+
 {% endblock body %}
