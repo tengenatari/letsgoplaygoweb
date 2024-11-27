@@ -2,35 +2,42 @@
 
 
 {% block body %}
+      <div class="cont" >
 <form class="row col-sm-12 g-3 align-middle p-auto row justify-content-center border" action="/update/session/{{ movie.movie_id }}/" method="POST">
     {% csrf_token %}
-        
+
         {{ form.start_time }}
         {{ form.cost }}
         {{ form.hall_id }}
         {{ form.movie_id }}
-        
+
     <button class="btn btn-primary" type="submit">Отправить</button>
 
 </form>
-    
-            
-    
+
+<div class="row" id="overflow" style="width: 100%; overflow-x: auto;">
+
+
     {% for row in hall %}
-        
-                <div class="row justify-content-md-center">
-                
+<table class="table movie cont "  style="overflow-y: auto;">
+
+                <tr >
+
                 {% for seat in row.0 %}
+                    <td >
                     {% if seat.1 %}
-                        <div class="col-sm-1 btn btn-info m-1">{{ seat.0 }}</div>
+                        <div class="btn btn-info p-2" ></div>
                     {% else %}
-                        <div class="col-sm-1 btn btn-danger m-1">{{ seat.0 }}</div>
+                        <div class="btn btn-danger "></div>
                     {% endif %}
 
-                    
-                    
+                    </td>
+
                     {% endfor %}
-                </div>
+                    </tr>
+                </table>
             {% endfor %}
-    
+
+</div>
+      </div>
 {% endblock %}

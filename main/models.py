@@ -6,9 +6,10 @@ from django.contrib.auth.models import AbstractUser
 # Create your models here.
 
 
-class Client(AbstractUser):
-    name = models.CharField(blank=True, null=True, default="")
-    birthday = models.DateField(blank=True, null=True, default=NoneType)
+class Client(models.Model):
+    client_id = models.AutoField(primary_key=True, null=False, unique=True)
+    name = models.CharField()
+    birthday = models.DateField()
 
     def __str__(self):
         return self.name.__str__()
@@ -29,6 +30,7 @@ class Movie(models.Model):
     movie_title = models.CharField(null=False)
     release_date = models.DateField()
     age_limit = models.PositiveIntegerField(null=False)
+    duration_time = models.TimeField(null=False)
 
     genres = models.ManyToManyField(Genre, null=False)
 
