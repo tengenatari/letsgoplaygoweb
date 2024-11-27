@@ -44,6 +44,18 @@ def login_user(request):
     return render(request, 'login.html', context={"form": login_form})
 
 
+def update_movie(request, movie_id, page=1):
+    movie = Movie.objects.filter(pk=movie_id)
+    if movie:
+        paginator = Paginator(Session.objects.filter(movie_id=movie_id), 10)
+        data = {
+            "Sessions": paginator.get_page(page),
+            "num_page": page,
+            "pages": paginator.page_range
+
+        }
+        return render(request, 'MovieForm.html', context=data)
+
 def logout_view(request):
     logout(request)
     return redirect('/')
