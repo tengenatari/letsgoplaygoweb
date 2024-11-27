@@ -26,6 +26,7 @@ urlpatterns = [
     path('logout/', views.logout_view, name='logout'),
     path('movie/<int:page>', views.save_create_movie, name='save_create_movie'),
     path('raw/<str:str_model>/add', views.create_model, name='CreateModel'),
-    path('update/movie/<int:movie_id>/<int:page>', views.update_movie, name='UpdateMovie')
-
+    path('update/movie/<int:movie_id>/', views.update_movie, name='UpdateMovie'),
+    path('delete/', views.delete_model, name='delete'),
+    path('update/session/<int:session_id>/', views.update_session, name='update_session'),
 ]

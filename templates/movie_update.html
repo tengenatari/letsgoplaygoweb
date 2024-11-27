@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+
+{% block body %}
+    <form class="row col-sm-12 g-3 align-middle p-auto row justify-content-center border" action="/update/movie/{{ movie.movie_id }}/" method="POST">
+    {% csrf_token %}
+
+        {{ form.movie_title }}
+        {{ form.release_date }}
+        {{ form.age_limit }}
+        {{ form.genres }}
+        <button class="btn btn-primary" type="submit">Отправить</button>
+    </form>
+    <table class="table movie">
+        <thead>
+            <tr>
+              <th scope="col">Номер</th>
+              <th scope="col">Дата проведения</th>
+              <th scope="col">Стоимость</th>
+                <th scope="col">Зал</th>
+            </tr>
+        </thead>
+        <tbody>
+    {% for session in sessions %}
+                <tr id="Session{{ session.session_id }}">
+                    <th scope="row">1</th>
+                    <td>{{ session.start_time }}</td>
+                    <td>{{ session.cost }}</td>
+                    <td>{{ session.hall_id }}</td>
+                    <td>
+                        <form action="/delete/" method="POST">
+                            {% csrf_token %}
+                            <input name="id" type="hidden"  value="{{ session.session_id }}">
+                            <button class="btn btn-danger" type="submit">Удалить</button>
+
+                        </form>
+
+                    </td>
+                    <td><a href="/update/session/{{ session.session_id  }}" class="btn btn-primary">Редактировать</a></td>
+                </tr>
+            {% endfor %}
+    </tbody>
+    </table>
+{% endblock body %}

@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+
+{% block body %}
+<form class="row col-sm-12 g-3 align-middle p-auto row justify-content-center border" action="/update/session/{{ movie.movie_id }}/" method="POST">
+    {% csrf_token %}
+        
+        {{ form.start_time }}
+        {{ form.cost }}
+        {{ form.hall_id }}
+        {{ form.movie_id }}
+        
+    <button class="btn btn-primary" type="submit">Отправить</button>
+
+</form>
+    
+            
+    
+    {% for row in hall %}
+        
+                <div class="row justify-content-md-center">
+                
+                {% for seat in row.0 %}
+                    {% if seat.1 %}
+                        <div class="col-sm-1 btn btn-info m-1">{{ seat.0 }}</div>
+                    {% else %}
+                        <div class="col-sm-1 btn btn-danger m-1">{{ seat.0 }}</div>
+                    {% endif %}
+
+                    
+                    
+                    {% endfor %}
+                </div>
+            {% endfor %}
+    
+{% endblock %}

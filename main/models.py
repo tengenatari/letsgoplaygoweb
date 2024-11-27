@@ -10,6 +10,9 @@ class Client(AbstractUser):
     name = models.CharField(blank=True, null=True, default="")
     birthday = models.DateField(blank=True, null=True, default=NoneType)
 
+    def __str__(self):
+        return self.name.__str__()
+
 
 class Genre(models.Model):
     genre_id = models.AutoField(primary_key=True, null=False, unique=True)
@@ -21,18 +24,24 @@ class Genre(models.Model):
 
 
 class Movie(models.Model):
-    genre_id = models.AutoField(primary_key=True, null=False, unique=True)
+    movie_id = models.AutoField(primary_key=True, null=False, unique=True)
 
     movie_title = models.CharField(null=False)
     release_date = models.DateField()
     age_limit = models.PositiveIntegerField(null=False)
 
-    genres = models.ManyToManyField(Genre)
+    genres = models.ManyToManyField(Genre, null=False)
+
+    def __str__(self):
+        return self.movie_title.__str__()
 
 
 class Hall(models.Model):
     hall_id = models.AutoField(primary_key=True, null=False, unique=True)
     hall_title = models.CharField(null=False)
+
+    def __str__(self):
+        return self.hall_title.__str__()
 
 
 class Row(models.Model):
@@ -49,6 +58,9 @@ class Row(models.Model):
 
     hall_id = models.ForeignKey(Hall, null=False, on_delete=models.PROTECT)
 
+    def __str__(self):
+        return self.row_num.__str__()
+
 
 class Session(models.Model):
     session_id = models.AutoField(primary_key=True, null=False, unique=True)
@@ -63,6 +75,9 @@ class Session(models.Model):
 
     hall_id = models.ForeignKey(Hall, null=False, on_delete=models.PROTECT)
     movie_id = models.ForeignKey(Movie, null=False, on_delete=models.PROTECT)
+
+    def __str__(self):
+        return self.movie_id.__str__() + self.start_time.__str__()
 
 
 class Ticket(models.Model):
@@ -81,3 +96,5 @@ class Ticket(models.Model):
     client_id = models.ForeignKey(Client, null=False, on_delete=models.PROTECT)
     session_id = models.ForeignKey(Session, null=False, on_delete=models.PROTECT)
 
+    def __str__(self):
+        return self.client_id.__str__() + self.row.__str__() + self.seat.__str__()
