@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block body %}
+
+{% endblock %}
+{% block footer %}
+<nav aria-label="Page navigation example">
+  <ul class="pagination justify-content-center">
+    <li class="page-item {% if  num_left < 1  %}disabled{% endif %}">
+      <a class="page-link" href="/{{ model }}/{{ num_left }}" tabindex="-1" {% if  num_left < 1  %}aria-disabled="true"{% endif %}>Previous</a>
+    </li>
+      {% if  num_left > 0  %}
+            <li class="page-item"><a class="page-link" href="/{{ model }}/{{ num_left }}">{{  num_left  }}</a></li>
+      {% endif %}
+    <li class="page-item"><a class="page-link" href="/{{ model }}/{{ num_page }}">{{ num_page }}</a></li>
+    {% if  num_right <= pages  %}
+            <li class="page-item"><a class="page-link" href="/{{ model }}/{{ num_right }}">{{num_right }}</a></li>
+      {% endif %}
+
+    <li class="page-item {% if  num_right > pages %}disabled{% endif %}">
+      <a class="page-link" href="/{{ model }}/{{ num_right }}" tabindex="-1" {% if  num_right > pages  %}aria-disabled="true"{% endif %}>Next</a>
+    </li>
+  </ul>
+</nav>
+{% endblock footer %}

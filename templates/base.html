@@ -32,19 +32,18 @@
                 <li class="nav-item">
                   <a class="nav-link active" aria-current="page" href="#">Home</a>
                 </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="#">Link</a>
-                </li>
+
                 <li class="nav-item dropdown">
                   <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                    Создать
+                    Объекты
                   </a>
                   <ul class="dropdown-menu">
-                    <li><a class="dropdown-item" href="/raw/movie/add">Фильм</a></li>
-                    <li><a class="dropdown-item" href="/raw/hall/add">Зал</a></li>
-                    <li><a class="dropdown-item" href="/raw/add">Зал</a></li>
+                    <li><a class="dropdown-item" href="/movie/1">Фильмы</a></li>
+                    <li><a class="dropdown-item" href="/hall/1">Залы</a></li>
+                    <li><a class="dropdown-item" href="/session/1">Сеансы</a></li>
+                    <li><a class="dropdown-item" href="/ticket/1">Билеты</a></li>
                     <li><hr class="dropdown-divider"></li>
-                    <li><a class="dropdown-item" href="#">Что-то еще здесь</a></li>
+                    <li><a class="dropdown-item" href="/client/1">Клиенты</a></li>
                   </ul>
                 </li>
                 
@@ -76,6 +75,9 @@
         {% endblock base_body %}
         {% block body %}
         {% endblock body %}
+    
     </div>
+{% block footer %}
+    {% endblock footer %}
 </body>
 </html>

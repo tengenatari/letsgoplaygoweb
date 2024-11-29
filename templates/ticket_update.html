@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+
+{% block body %}
+    {{ form.non_field_errors }}
+    {{ form.release_date.errors }}
+    {{ form.age_limit.errors}}
+    {{ form.genres.errors}}
+    <form class="row col-sm-12 g-3 align-middle p-auto row justify-content-center border" action="/update/ticket/{{ ticket.ticket_id }}/" method="POST">
+    {% csrf_token %}
+
+        <label> Клиент
+            {{ form.client_id.errors }}
+        {{ form.client_id }}
+            </label>
+
+        <label>
+            Сеанс:
+            <input class="form-control" value="{{ ticket.session_id }}" disabled/>
+        </label>
+        <label>
+            Ряд и Место
+            <input class="form-control" value="{{ ticket.row}} - {{ ticket.seat }}" disabled/>
+        </label>
+        <label>
+            Дата приобретения
+            <input class="form-control" value="{{ ticket.purchase_time }}" disabled/>
+        </label>
+
+
+
+
+        <button class="btn btn-primary" type="submit">Отправить</button>
+    </form>{% endblock body %}

@@ -79,7 +79,7 @@ class Session(models.Model):
     movie_id = models.ForeignKey(Movie, null=False, on_delete=models.PROTECT)
 
     def __str__(self):
-        return self.movie_id.__str__() + self.start_time.__str__()
+        return self.start_time.__str__() + " " + self.movie_id.__str__() + " "
 
 
 class Ticket(models.Model):
@@ -99,4 +99,4 @@ class Ticket(models.Model):
     session_id = models.ForeignKey(Session, null=False, on_delete=models.PROTECT)
 
     def __str__(self):
-        return self.client_id.__str__() + self.row.__str__() + self.seat.__str__()
+        return self.client_id.__str__() + " " + self.row.__str__() + " " + self.seat.__str__() + " " + self.session_id.__str__()

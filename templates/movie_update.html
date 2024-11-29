@@ -2,16 +2,32 @@
 
 
 {% block body %}
+    {{ form.non_field_errors }}
+    {{ form.release_date.errors }}
+    {{ form.age_limit.errors}}
+    {{ form.genres.errors}}
     <form class="row col-sm-12 g-3 align-middle p-auto row justify-content-center border" action="/update/movie/{{ movie.movie_id }}/" method="POST">
     {% csrf_token %}
 
-        {{ form.movie_title }}
+        <label> Название фильма
+        {{ form.movie_title.errors }}
+        {{ form.movie_title }}</label>
+        <label>Дата выхода
         {{ form.release_date }}
-        {{ form.age_limit }}
-        {{ form.genres }}
+        {{ form.release_date.errors }}</label>
+        <label>Возрастное ограничение
+        {{ form.age_limit.errors}}
+        {{ form.age_limit }}</label>
+        <label>Жанры
+        {{ form.genres.errors}}
+        {{ form.genres }}</label>
+
+
+
         <button class="btn btn-primary" type="submit">Отправить</button>
     </form>
-    <table class="table movie">
+    <table class="table movie caption-top">
+    <caption>Список сеансов</caption>
         <thead>
             <tr>
               <th scope="col">Номер</th>
@@ -41,4 +57,5 @@
             {% endfor %}
     </tbody>
     </table>
+    
 {% endblock body %}

@@ -1,0 +1,39 @@
+{% extends 'table.html' %}
+
+
+{% block body %}
+    <div class="cont">
+    {% csrf_token %}
+    <table class="table">
+        <thead>
+            <tr>
+              <th scope="col">Номер</th>
+              <th scope="col">Название Зала</th>
+
+            </tr>
+        </thead>
+        <tbody>
+            {% for hall in data %}
+                <tr>
+                    <th scope="row">1</th>
+                    <td>{{ hall.hall_title}}</td>
+
+                    <td>
+                        <form action="/delete/" method="POST">
+                            {% csrf_token %}
+                            <input name="id" type="hidden"  value="{{ hall.hall_id }}">
+                            <input name="table" type="hidden"  value="session">
+                            <button class="btn btn-danger" type="submit"> Удалить </button>
+
+                        </form>
+
+                    </td>
+                    <td><a href="/update/hall/{{ hall.hall_id }}" class="btn btn-primary">Редактировать</a></td>
+                </tr>
+
+            {% endfor %}
+        </tbody>
+
+    </table>
+
+{% endblock body %}

@@ -6,14 +6,33 @@ from django.http import HttpResponse
 from django.core.paginator import Paginator
 from .models import *
 
-models = {"movie": Movie, "genre": Genre, "client": Client, "row": Row, "session": Session, "hall": Hall}
+models = {"movie": Movie, "genre": Genre, "client": Client, "row": Row, "session": Session, "hall": Hall,
+          "ticket": Ticket}
+
+
+def get_pages(instance, page, model):
+    paginator = Paginator(instance.objects.all(), 10)
+
+    response = {
+        "data": paginator.get_page(page),
+        "num_left": page - 1,
+        "num_page": page,
+        "num_right": page + 1,
+        "pages": paginator.num_pages,
+        "model": model
+    }
+    print(paginator.count)
+    return response
 
 
 def update(request, table, instance):
     if request.method == 'POST':
         form = Forms(table).form(request.POST or None, instance=instance)
+        print(form.is_valid())
         if form.is_valid():
             form.save()
+        else:
+            return form, instance
 
 
 def main(request):
@@ -57,23 +76,6 @@ def logout_view(request):
     return redirect('/')
 
 
-def save_create_movie(request, page=1):
-    paginator = Paginator(Movie.objects.all(), 10)
-
-    if request.method == 'POST':
-        if request['type'] == 'delete':
-            Movie.objects.filter(pk__in=request.POST['movie']).delete().save()
-
-    response = {
-        "data": paginator.get_page(page),
-        "num_page": page,
-        "pages": paginator.page_range
-
-    }
-
-    return render(request, 'movie.html', context=response)
-
-
 def create_model(request, str_model):
     print(request.__dict__)
     model = models[str_model]
@@ -84,7 +86,6 @@ def create_model(request, str_model):
         if form_model.is_valid():
             print(str_model)
             form_model.save(commit=True)
-            return render(request, 'success.html')
 
     return render(request, 'raw.html', context={"form": form_model, "URL": f'/raw/{str_model}/add'})
 
@@ -102,12 +103,12 @@ def delete_model(request):
 def update_movie(request, movie_id):
     instance = get_object_or_404(Movie, movie_id=movie_id)
 
-    update(request, Movie, instance)
-
-    movie = get_object_or_404(Movie, movie_id=movie_id)
+    if not(form_movie := update(request, Movie, instance)):
+        movie = get_object_or_404(Movie, movie_id=movie_id)
+        form_movie = Forms(Movie).form(instance=movie)
+    else:
+        form_movie, movie = form_movie
     sessions = Session.objects.filter(movie_id=movie_id).all()
-
-    form_movie = Forms(Movie).form(instance=movie)
 
     return render(request, 'movie_update.html', context={"movie": movie, "sessions": sessions, "form": form_movie})
 
@@ -127,14 +128,37 @@ def update_session(request, session_id):
     matrix_tickets = []
     for row in hall:
         rows.append(row.num_seats)
-        matrix_tickets.append([True]*row.num_seats)
+        matrix_tickets.append([False]*row.num_seats)
 
     for ticket in tickets:
         if ticket.row in rows and 1 <= ticket.seats <= rows[rows.index(ticket.row)]:
-            matrix_tickets[rows.index(ticket.row)][ticket.seats-1] = False
+            matrix_tickets[rows.index(ticket.row)][ticket.seats-1] = ticket
 
     for i in range(len(rows)):
         matrix_hall.append(list(zip(list(range(1, rows[i]+1)), matrix_tickets[i])))
 
     matrix_hall = zip(matrix_hall, rows)
     return render(request, 'session_update.html', context={"session": session, "form": form_session, "tickets": tickets, "hall": matrix_hall})
+
+
+def update_ticket(request, ticket_id):
+
+    instance = get_object_or_404(Ticket, ticket_id=ticket_id)
+    if not (form_ticket := update(request, Ticket, instance)):
+        ticket = get_object_or_404(Ticket, ticket_id=ticket_id)
+        form_ticket = Forms(Ticket).form(instance=ticket)
+    else:
+        form_ticket, ticket = form_ticket
+
+    return render(request, 'ticket_update.html', context={"ticket": ticket, "form": form_ticket})
+
+
+def update_hall(request, hall_id):
+    instance = get_object_or_404(Hall, hall_id=hall_id)
+
+
+
+def view_some_table(request, model, page):
+    table = models[model]
+    response = get_pages(table, page, model)
+    return render(request, f'{model}.html', context=response)

@@ -1,0 +1,44 @@
+{% extends 'table.html' %}
+
+{% block body %}
+    <div class="cont">
+    {% csrf_token %}
+    <table class="table">
+        <thead>
+            <tr>
+              <th scope="col">Номер</th>
+              <th scope="col">Фильм</th>
+              <th scope="col">Зал</th>
+              <th scope="col">Время проведения</th>
+                <th scope="col"> Стоимость</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for session in data %}
+                <tr>
+                    <th scope="row">1</th>
+                    <td>{{ session.movie_id }}</td>
+                    <td>{{ session.hall_id }}</td>
+                    <td>{{ session.start_time }}</td>
+                    <td>{{ session.cost}}</td>
+                    <td>
+                        <form action="/delete/" method="POST">
+                            {% csrf_token %}
+                            <input name="id" type="hidden"  value="{{ session.session_id }}">
+                            <input name="table" type="hidden"  value="session">
+                            <button class="btn btn-danger" type="submit"> Удалить </button>
+
+                        </form>
+
+                    </td>
+                    <td><a href="/update/session/{{ session.session_id }}" class="btn btn-primary">Редактировать</a></td>
+                </tr>
+
+            {% endfor %}
+        </tbody>
+
+    </table>
+</div>
+
+
+{% endblock body %}

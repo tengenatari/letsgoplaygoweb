@@ -7,38 +7,36 @@
         <thead>
             <tr>
               <th scope="col">Номер</th>
-              <th scope="col">Название</th>
-              <th scope="col">Дата выхода</th>
-              <th scope="col">Возрастное ограничение</th>
+              <th scope="col">Имя</th>
+              <th scope="col">Дата рождения</th>
+              
             </tr>
         </thead>
         <tbody>
-            {% for movie in data %}
+            {% for client in data %}
                 <tr>
                     <th scope="row">1</th>
-                    <td>{{ movie.movie_title }}</td>
-                    <td>{{ movie.release_date }}</td>
-                    <td>{{ movie.age_limit }}</td>
+                    <td>{{ client.name }}</td>
+                    <td>{{ client.birthday }}</td>
                     <td>
                         <form action="/delete/" method="POST">
                             {% csrf_token %}
-                            <input name="id" type="hidden"  value="{{ movie.movie_id }}">
-                            <input name="table" type="hidden"  value="movie">
+                            <input name="id" type="hidden"  value="{{ client.client_id }}">
+                            <input name="table" type="hidden"  value="session">
                             <button class="btn btn-danger" type="submit"> Удалить </button>
 
                         </form>
 
                     </td>
-                    <td><a href="/update/movie/{{ movie.movie_id }}" class="btn btn-primary">Редактировать</a></td>
+                    <td><a href="/update/client/{{ client.client_id }}" class="btn btn-primary">Редактировать</a></td>
                 </tr>
-                
+
             {% endfor %}
         </tbody>
 
     </table>
 
 </div>
-
 
 
 {% endblock body %}

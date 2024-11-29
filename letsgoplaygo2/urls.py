@@ -24,9 +24,11 @@ urlpatterns = [
     path('auth', views.auth, name='auth'),
     path('login', views.login_user, name='login'),
     path('logout/', views.logout_view, name='logout'),
-    path('movie/<int:page>', views.save_create_movie, name='save_create_movie'),
     path('raw/<str:str_model>/add', views.create_model, name='CreateModel'),
-    path('update/movie/<int:movie_id>/', views.update_movie, name='UpdateMovie'),
-    path('delete/', views.delete_model, name='delete'),
+    path('<str:model>/<int:page>', views.view_some_table, name='view_some_table'),
     path('update/session/<int:session_id>/', views.update_session, name='update_session'),
+    path('update/movie/<int:movie_id>/', views.update_movie, name='UpdateMovie'),
+    path('update/ticket/<int:ticket_id>/', views.update_ticket, name='update_ticket'),
+    path('delete/', views.delete_model, name='delete'),
+
 ]

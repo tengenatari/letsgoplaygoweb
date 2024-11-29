@@ -3,32 +3,45 @@
 
 {% block body %}
       <div class="cont" >
-<form class="row col-sm-12 g-3 align-middle p-auto row justify-content-center border" action="/update/session/{{ movie.movie_id }}/" method="POST">
+<form class="row col-sm-12 g-3 align-middle p-auto row justify-content-center border" action="/update/session/{{ session.session_id }}/" method="POST">
     {% csrf_token %}
-
+    <label>Время начала фильма
+        {{ form.start_time.errors }}
         {{ form.start_time }}
-        {{ form.cost }}
+        </label>
+    <label>Стоимость в рублях
+    {{ form.cost.errors }}
+    {{ form.cost }}
+        </label>
+    <label> Зал
         {{ form.hall_id }}
-        {{ form.movie_id }}
+        {{ form.hall_errors }}
+        </label>
+    <label> Название фильма
+        {{ form.movie_id }}</label>
 
     <button class="btn btn-primary" type="submit">Отправить</button>
 
 </form>
 
 <div class="row" id="overflow" style="width: 100%; overflow-x: auto;">
-
+Места в зале
 
     {% for row in hall %}
-<table class="table movie cont "  style="overflow-y: auto;">
+<table class="table movie cont">
 
                 <tr >
 
                 {% for seat in row.0 %}
                     <td >
                     {% if seat.1 %}
-                        <div class="btn btn-info p-2" ></div>
+
+                        <a href="/ticket/{{ ticket.ticket_id }}" class="btn btn-danger p-2" ></a>
                     {% else %}
-                        <div class="btn btn-danger "></div>
+                        <a class="btn btn-info p-2" href="/create/ticket/{{ row.1}}/{{ seat.0 }}" ></a>
+
+
+
                     {% endif %}
 
                     </td>
