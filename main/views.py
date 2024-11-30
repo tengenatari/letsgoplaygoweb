@@ -154,7 +154,19 @@ def update_ticket(request, ticket_id):
 
 
 def update_hall(request, hall_id):
+
     instance = get_object_or_404(Hall, hall_id=hall_id)
+
+    if not (form_hall := update(request, Hall, instance)):
+        hall = get_object_or_404(Hall, hall_id=hall_id)
+        form_hall = Forms(Hall).form(instance=hall)
+    else:
+        form_hall, hall = form_hall
+
+    rows = Row.objects.filter(hall_id=hall_id).all()
+
+    return render(request, 'hall_update.html', context={"hall": hall, "form": form_hall, "rows": rows})
+
 
 
 def view_some_table(request, model, page):

@@ -29,6 +29,7 @@ urlpatterns = [
     path('update/session/<int:session_id>/', views.update_session, name='update_session'),
     path('update/movie/<int:movie_id>/', views.update_movie, name='UpdateMovie'),
     path('update/ticket/<int:ticket_id>/', views.update_ticket, name='update_ticket'),
+    path('update/hall/<int:hall_id>', views.update_hall, name='update_hall'),
     path('delete/', views.delete_model, name='delete'),
 
 ]
