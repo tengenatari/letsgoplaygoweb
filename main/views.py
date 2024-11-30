@@ -157,7 +157,6 @@ def update_hall(request, hall_id):
     instance = get_object_or_404(Hall, hall_id=hall_id)
 
 
-
 def view_some_table(request, model, page):
     table = models[model]
     response = get_pages(table, page, model)
