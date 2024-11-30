@@ -25,26 +25,26 @@
               <th scope="col">Номер</th>
               <th scope="col">Дата проведения</th>
               <th scope="col">Стоимость</th>
-                <th scope="col">Зал</th>
             </tr>
         </thead>
         <tbody>
-    {% for session in sessions %}
-                <tr id="Session{{ session.session_id }}">
+    {% for row in rows %}
+                <tr>
                     <th scope="row">1</th>
-                    <td>{{ session.start_time }}</td>
-                    <td>{{ session.cost }}</td>
-                    <td>{{ session.hall_id }}</td>
+                    <td>{{ row.row_num }}</td>
+                    <td>{{ row.num_seats }}</td>
+                   
                     <td>
                         <form action="/delete/" method="POST">
                             {% csrf_token %}
-                            <input name="id" type="hidden"  value="{{ session.session_id }}">
+                            <input name="id" type="hidden"  value="{{ row.row_id }}">
+                            <input name="table" type="hidden"  value="row">
                             <button class="btn btn-danger" type="submit">Удалить</button>
 
                         </form>
 
                     </td>
-                    <td><a href="/update/session/{{ session.session_id  }}" class="btn btn-primary">Редактировать</a></td>
+                    <td><a href="/update/row/{{ row.row_id}}" class="btn btn-primary">Редактировать</a></td>
                 </tr>
             {% endfor %}
     </tbody>

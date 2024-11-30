@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+
+{% block body %}
+ <form class="row col-sm-12 g-3 align-middle p-auto row justify-content-center border" action="/update/row/{{ row.row_id }}/" method="POST">
+    {% csrf_token %}
+            <label>
+            Зал
+            <input class="form-control" value="{{ row.hall_id}}" disabled/>
+        </label>
+
+        <label> Номер ряда
+            {{ form.row_num.errors }}
+        {{ form.row_num }}
+            </label>
+     <label> Количество мест
+            {{ form.num_seats.errors }}
+        {{ form.num_seats }}
+            </label>
+        {{ form.hall_id.as_hidden }}
+
+
+
+
+        <button class="btn btn-primary" type="submit">Отправить</button>
+    </form>
+
+
+
+{% endblock body %}

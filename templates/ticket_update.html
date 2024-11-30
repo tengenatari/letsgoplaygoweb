@@ -3,9 +3,7 @@
 
 {% block body %}
     {{ form.non_field_errors }}
-    {{ form.release_date.errors }}
-    {{ form.age_limit.errors}}
-    {{ form.genres.errors}}
+
     <form class="row col-sm-12 g-3 align-middle p-auto row justify-content-center border" action="/update/ticket/{{ ticket.ticket_id }}/" method="POST">
     {% csrf_token %}
 
@@ -26,6 +24,10 @@
             Дата приобретения
             <input class="form-control" value="{{ ticket.purchase_time }}" disabled/>
         </label>
+        {{ form.purchase_time.as_hidden }}
+        {{ form.row.as_hidden }}
+        {{ form.seat.as_hidden }}
+        {{ form.session_id.as_hidden }}
 
 
 

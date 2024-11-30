@@ -1,7 +1,24 @@
-{% extends 'table.html' %}
+{% extends 'base.html' %}
+
 
 {% block body %}
+<form class="row col-sm-12 g-3 align-middle p-auto row justify-content-center border" action="/update/client/{{ client.client_id }}/" method="POST">
+    {% csrf_token %}
+
+        <label> Имя клиента
+            {{ form.name.errors }}
+        {{ form.name }}
+            </label>
+
+        <label>
+            День рождения
+            {{ form.birthday.errors}}
+            {{ form.birthday }}
+        </label>
+        <button class="btn btn-primary" type="submit">Отправить</button>
+        </form>
     <div class="cont">
+
     {% csrf_token %}
     <table class="table">
         <thead>
@@ -16,8 +33,7 @@
             {% for ticket in data %}
                 <tr >
                     <th scope="row">1</th>
-                    {{ form.client_id.errors }}
-                    <td>{{ ticket.client_id }}</td>
+                    
                     <td>{{ ticket.session_id }}</td>
                     <td>{{ ticket.purchase_time}}</td>
                     <td> {{ ticket.row }}</td>
@@ -41,6 +57,5 @@
     </table>
 
 </div>
-
 
 {% endblock body %}

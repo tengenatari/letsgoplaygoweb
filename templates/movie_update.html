@@ -18,11 +18,16 @@
         <label>Возрастное ограничение
         {{ form.age_limit.errors}}
         {{ form.age_limit }}</label>
+        <label>
+            Длительность
+            {{ form.duration_time.errors }}
+            {{ form.duration_time }}
+        </label>
+
         <label>Жанры
         {{ form.genres.errors}}
         {{ form.genres }}</label>
-
-
+        
 
         <button class="btn btn-primary" type="submit">Отправить</button>
     </form>
@@ -47,6 +52,7 @@
                         <form action="/delete/" method="POST">
                             {% csrf_token %}
                             <input name="id" type="hidden"  value="{{ session.session_id }}">
+                            <input name="table" type="hidden"  value="session">
                             <button class="btn btn-danger" type="submit">Удалить</button>
 
                         </form>

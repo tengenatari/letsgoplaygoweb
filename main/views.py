@@ -1,8 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from .forms import *
-from django.http import HttpResponse
 from django.core.paginator import Paginator
 from .models import *
 
@@ -27,12 +25,22 @@ def get_pages(instance, page, model):
 
 def update(request, table, instance):
     if request.method == 'POST':
+        print(request.POST)
         form = Forms(table).form(request.POST or None, instance=instance)
         print(form.is_valid())
         if form.is_valid():
             form.save()
         else:
             return form, instance
+
+
+def create_form(request, instance, instance_id, model):
+    if not (form_name := update(request, model, instance)):
+        instance = get_object_or_404(model, **instance_id)
+        form_name = Forms(Client).form(instance=instance)
+    else:
+        form_name, instance = form_name
+    return form_name, instance
 
 
 def main(request):
@@ -97,17 +105,12 @@ def delete_model(request):
         print(table, table_id)
         table.objects.filter(pk=table_id).delete()
 
-        return redirect('/')
-
 
 def update_movie(request, movie_id):
     instance = get_object_or_404(Movie, movie_id=movie_id)
 
-    if not(form_movie := update(request, Movie, instance)):
-        movie = get_object_or_404(Movie, movie_id=movie_id)
-        form_movie = Forms(Movie).form(instance=movie)
-    else:
-        form_movie, movie = form_movie
+    form_movie, movie = create_form(request, instance, {"movie_id": movie_id}, Movie)
+
     sessions = Session.objects.filter(movie_id=movie_id).all()
 
     return render(request, 'movie_update.html', context={"movie": movie, "sessions": sessions, "form": form_movie})
@@ -138,17 +141,15 @@ def update_session(request, session_id):
         matrix_hall.append(list(zip(list(range(1, rows[i]+1)), matrix_tickets[i])))
 
     matrix_hall = zip(matrix_hall, rows)
-    return render(request, 'session_update.html', context={"session": session, "form": form_session, "tickets": tickets, "hall": matrix_hall})
+    return render(request, 'session_update.html', context={"session": session, "form": form_session,
+                                                           "tickets": tickets, "hall": matrix_hall})
 
 
 def update_ticket(request, ticket_id):
 
     instance = get_object_or_404(Ticket, ticket_id=ticket_id)
-    if not (form_ticket := update(request, Ticket, instance)):
-        ticket = get_object_or_404(Ticket, ticket_id=ticket_id)
-        form_ticket = Forms(Ticket).form(instance=ticket)
-    else:
-        form_ticket, ticket = form_ticket
+
+    form_ticket, ticket = create_form(request, instance, {"ticket_id": ticket_id}, Ticket)
 
     return render(request, 'ticket_update.html', context={"ticket": ticket, "form": form_ticket})
 
@@ -157,16 +158,27 @@ def update_hall(request, hall_id):
 
     instance = get_object_or_404(Hall, hall_id=hall_id)
 
-    if not (form_hall := update(request, Hall, instance)):
-        hall = get_object_or_404(Hall, hall_id=hall_id)
-        form_hall = Forms(Hall).form(instance=hall)
-    else:
-        form_hall, hall = form_hall
+    form_hall, hall = create_form(request, instance, {'hall_id': hall_id}, Hall)
 
     rows = Row.objects.filter(hall_id=hall_id).all()
 
     return render(request, 'hall_update.html', context={"hall": hall, "form": form_hall, "rows": rows})
 
+
+def update_row(request, row_id):
+    instance = get_object_or_404(Row, row_id=row_id)
+
+    form_row, row = create_form(request, instance, {"row_id": row_id}, Row)
+
+    return render(request, 'row_update.html', context={"row": row, "form": form_row})
+
+
+def update_client(request, client_id):
+    instance = get_object_or_404(Client, client_id=client_id)
+
+    form_client, client = create_form(request, instance, {"client_id": client_id}, Client)
+
+    return render(request, 'client_update.html', context={"client": client, "form": form_client})
 
 
 def view_some_table(request, model, page):
