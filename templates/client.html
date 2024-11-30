@@ -22,7 +22,7 @@
                         <form action="/delete/" method="POST">
                             {% csrf_token %}
                             <input name="id" type="hidden"  value="{{ client.client_id }}">
-                            <input name="table" type="hidden"  value="client">
+                            <input name="table" type="hidden"  value="session">
                             <button class="btn btn-danger" type="submit"> Удалить </button>
 
                         </form>

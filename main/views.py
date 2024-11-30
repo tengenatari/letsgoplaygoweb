@@ -23,21 +23,10 @@ def get_pages(instance, page, model):
     return response
 
 
-def update(request, table, instance):
-    if request.method == 'POST':
-        print(request.POST)
-        form = Forms(table).form(request.POST or None, instance=instance)
-        print(form.is_valid())
-        if form.is_valid():
-            form.save()
-        else:
-            return form, instance
-
-
 def create_form(request, instance, instance_id, model):
     if not (form_name := update(request, model, instance)):
         instance = get_object_or_404(model, **instance_id)
-        form_name = Forms(Client).form(instance=instance)
+        form_name = Forms(model).form(instance=instance)
     else:
         form_name, instance = form_name
     return form_name, instance
@@ -98,22 +87,31 @@ def create_model(request, str_model):
     return render(request, 'raw.html', context={"form": form_model, "URL": f'/raw/{str_model}/add'})
 
 
-def delete_model(request):
+def create_ticket(request):
     if request.method == 'POST':
-        table_id = request.POST['id']
-        table = models[request.POST['table']]
-        print(table, table_id)
-        table.objects.filter(pk=table_id).delete()
+        form_ticket = form_name = Forms(Ticket).form(request.POST)
+        if form_ticket.is_valid():
+            ticket = form_ticket.save()
+            return redirect(f'/update/ticket/{ticket.pk}')
+    form_ticket = Forms(Ticket).form()
+    return render(request, "create_client.html", context={"form": form_ticket})
 
 
-def update_movie(request, movie_id):
-    instance = get_object_or_404(Movie, movie_id=movie_id)
+def read_model(request, model, page):
+    table = models[model]
+    response = get_pages(table, page, model)
+    return render(request, f'{model}.html', context=response)
 
-    form_movie, movie = create_form(request, instance, {"movie_id": movie_id}, Movie)
 
-    sessions = Session.objects.filter(movie_id=movie_id).all()
-
-    return render(request, 'movie_update.html', context={"movie": movie, "sessions": sessions, "form": form_movie})
+def update(request, table, instance):
+    if request.method == 'POST':
+        print(request.POST)
+        form = Forms(table).form(request.POST or None, instance=instance)
+        print(form.is_valid())
+        if form.is_valid():
+            form.save()
+        else:
+            return form, instance
 
 
 def update_session(request, session_id):
@@ -154,6 +152,16 @@ def update_ticket(request, ticket_id):
     return render(request, 'ticket_update.html', context={"ticket": ticket, "form": form_ticket})
 
 
+def update_movie(request, movie_id):
+    instance = get_object_or_404(Movie, movie_id=movie_id)
+
+    form_movie, movie = create_form(request, instance, {"movie_id": movie_id}, Movie)
+
+    sessions = Session.objects.filter(movie_id=movie_id).all()
+
+    return render(request, 'movie_update.html', context={"movie": movie, "sessions": sessions, "form": form_movie})
+
+
 def update_hall(request, hall_id):
 
     instance = get_object_or_404(Hall, hall_id=hall_id)
@@ -178,10 +186,15 @@ def update_client(request, client_id):
 
     form_client, client = create_form(request, instance, {"client_id": client_id}, Client)
 
-    return render(request, 'client_update.html', context={"client": client, "form": form_client})
+    data = Ticket.objects.filter(client_id=client_id)
+
+    return render(request, 'client_update.html', context={"client": client, "form": form_client, "data": data})
 
 
-def view_some_table(request, model, page):
-    table = models[model]
-    response = get_pages(table, page, model)
-    return render(request, f'{model}.html', context=response)
+def delete_model(request):
+    if request.method == 'POST':
+        table_id = request.POST['id']
+        table = models[request.POST['table']]
+        print(table, table_id)
+        table.objects.filter(pk=table_id).delete()
+
