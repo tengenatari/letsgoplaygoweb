@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+
+
+{% block body %}
+    <form class="row col-sm-12 g-3 align-middle p-auto row justify-content-center border" action="/create/ticket/{{ form.session_id.value }}/{{ row }}/{{ seat }}" method="POST">
+    {% csrf_token %}
+
+        <label> Имя клиента
+            {{ form.client_id.errors }}
+        {{ form.client_id }}
+            </label>
+
+        <label>
+            Ряд и место
+            <input class="form-control"  value="{{ form.row.value }} - {{ form.seat.value }}" disabled>
+            
+        </label>
+        
+        <label>
+            <input class="form-control"  value="{{ session }}" disabled>
+        </label>
+        
+        {{ form.row.as_hidden }}
+        {{ form.seat.as_hidden }}
+        {{ form.session_id.as_hidden }}
+        <button class="btn btn-primary" type="submit">Отправить</button>
+        </form>
+    
+{% endblock %}

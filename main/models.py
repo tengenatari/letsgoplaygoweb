@@ -85,7 +85,7 @@ class Session(models.Model):
 class Ticket(models.Model):
     ticket_id = models.AutoField(primary_key=True, null=False, unique=True)
 
-    purchase_time = models.DateTimeField(null=False)
+    purchase_time = models.DateTimeField(null=False, auto_now=True)
     row = models.PositiveIntegerField(null=False)
     seat = models.PositiveIntegerField(null=False)
 

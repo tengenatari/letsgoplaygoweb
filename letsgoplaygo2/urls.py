@@ -33,5 +33,6 @@ urlpatterns = [
     path('update/row/<int:row_id>/', views.update_row, name='update_row'),
     path('update/client/<int:client_id>/', views.update_client, name='update_row'),
     path('delete/', views.delete_model, name='delete'),
+    path('create/ticket/<int:session>/<int:row>/<int:seat>', views.create_ticket, name="create_ticket")
 
 ]

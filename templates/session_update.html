@@ -36,9 +36,9 @@
                     <td >
                     {% if seat.1 %}
 
-                        <a href="/ticket/{{ ticket.ticket_id }}" class="btn btn-danger p-2" ></a>
+                        <a href="/update/ticket/{{ seat.1.ticket_id }}" class="btn btn-danger p-2" ></a>
                     {% else %}
-                        <a class="btn btn-info p-2" href="/create/ticket/{{ row.1}}/{{ seat.0 }}" ></a>
+                        <a class="btn btn-info p-2" href="/create/ticket/{{ session.session_id }}/{{ row.1}}/{{ seat.0 }}" ></a>
 
 
 

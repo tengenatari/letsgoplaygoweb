@@ -8,8 +8,11 @@ models = {"movie": Movie, "genre": Genre, "client": Client, "row": Row, "session
           "ticket": Ticket}
 
 
-def get_pages(instance, page, model):
-    paginator = Paginator(instance.objects.all(), 10)
+def get_pages(instance, page, model, kwargs):
+    kwargs = dict(kwargs)
+    for x in kwargs.keys():
+        kwargs[x] = kwargs[x][0]
+    paginator = Paginator(instance.objects.filter(**dict(kwargs)).all(), 10)
 
     response = {
         "data": paginator.get_page(page),
@@ -19,7 +22,6 @@ def get_pages(instance, page, model):
         "pages": paginator.num_pages,
         "model": model
     }
-    print(paginator.count)
     return response
 
 
@@ -87,19 +89,21 @@ def create_model(request, str_model):
     return render(request, 'raw.html', context={"form": form_model, "URL": f'/raw/{str_model}/add'})
 
 
-def create_ticket(request):
+def create_ticket(request, session, row, seat):
+    form_ticket = Forms(Ticket).form(initial={'session_id': session, 'row': row, 'seat': seat})
     if request.method == 'POST':
-        form_ticket = form_name = Forms(Ticket).form(request.POST)
+        form_ticket = Forms(Ticket).form(request.POST)
         if form_ticket.is_valid():
             ticket = form_ticket.save()
             return redirect(f'/update/ticket/{ticket.pk}')
-    form_ticket = Forms(Ticket).form()
-    return render(request, "create_client.html", context={"form": form_ticket})
+    session = get_object_or_404(Session, pk=session)
+    return render(request, "create_ticket.html", context={"form": form_ticket, "session": session.__str__(), "seat": seat, "row": row})
 
 
 def read_model(request, model, page):
+    print(request.GET)
     table = models[model]
-    response = get_pages(table, page, model)
+    response = get_pages(table, page, model, request.GET)
     return render(request, f'{model}.html', context=response)
 
 
@@ -132,8 +136,8 @@ def update_session(request, session_id):
         matrix_tickets.append([False]*row.num_seats)
 
     for ticket in tickets:
-        if ticket.row in rows and 1 <= ticket.seats <= rows[rows.index(ticket.row)]:
-            matrix_tickets[rows.index(ticket.row)][ticket.seats-1] = ticket
+        if ticket.row in rows and 1 <= ticket.seat <= rows[rows.index(ticket.row)]:
+            matrix_tickets[rows.index(ticket.row)][ticket.seat-1] = ticket
 
     for i in range(len(rows)):
         matrix_hall.append(list(zip(list(range(1, rows[i]+1)), matrix_tickets[i])))

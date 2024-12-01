@@ -6,16 +6,30 @@
     <table class="table">
         <thead>
             <tr>
-              <th scope="col">Номер</th>
+              
               <th scope="col">Имя</th>
               <th scope="col">Дата рождения</th>
               
             </tr>
         </thead>
         <tbody>
+        <tr>
+            <form>
+                <th>
+                    <input name="name__icontains" class="form-control">
+                </th>
+                <th>
+                    <input name="birthday__icontains" class="form-control">
+                </th>
+                <th></th>
+                <th>
+                    <button class=" btn btn-primary">Поиск</button>
+                </th>
+            </form>
+        </tr>
             {% for client in data %}
                 <tr>
-                    <th scope="row">1</th>
+                    
                     <td>{{ client.name }}</td>
                     <td>{{ client.birthday }}</td>
                     <td>
