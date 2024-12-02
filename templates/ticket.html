@@ -6,16 +6,33 @@
     <table class="table">
         <thead>
             <tr>
-              <th scope="col">Номер</th>
+              <th scope="col">Клиент</th>
               <th scope="col">Сеанс</th>
-              <th scope="col">Дата выхода</th>
               <th scope="col">Дата приобретения</th><th scope="col">Ряд</th><th scope="col">Место</th>
             </tr>
         </thead>
         <tbody>
+         <tr>
+            <form>
+                <th>
+                    <input name="client_id__icontains" class="form-control">
+                </th>
+                <th>
+                    <input name="session_id__icontains" class="form-control">
+                </th>
+                <th>
+                    <input name="puchase_time__icontains" class="form-control">
+                </th>
+                <th></th>
+                <th></th>
+                <th>
+                    <button class=" btn btn-primary">Поиск</button>
+                </th>
+            </form>
+        </tr>
             {% for ticket in data %}
                 <tr >
-                    <th scope="row">1</th>
+
                     {{ form.client_id.errors }}
                     <td>{{ ticket.client_id }}</td>
                     <td>{{ ticket.session_id }}</td>

@@ -13,9 +13,20 @@
             </tr>
         </thead>
         <tbody>
+        <tr>
+            <form>
+                <th>
+                    <input name="hall_title__icontains" class="form-control">
+                </th>
+
+                <th></th>
+                <th>
+                    <button class=" btn btn-primary">Поиск</button>
+                </th>
+            </form>
             {% for hall in data %}
                 <tr>
-                    <th scope="row">1</th>
+
                     <td>{{ hall.hall_title}}</td>
 
                     <td>

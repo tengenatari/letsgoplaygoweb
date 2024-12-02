@@ -6,16 +6,33 @@
     <table class="table">
         <thead>
             <tr>
-              <th scope="col">Номер</th>
+ <tr>
+            <form>
+                <th>
+                    <input name="movie_title__icontains" class="form-control">
+                </th>
+                <th>
+                    <input name="release_date__icontains" class="form-control">
+                </th>
+                <th>
+                    <input name="age_limit__icontains" class="form-control">
+                </th>
+                <th></th>
+                <th>
+                    <button class=" btn btn-primary">Поиск</button>
+                </th>
+            </form>
+        </tr>
               <th scope="col">Название</th>
               <th scope="col">Дата выхода</th>
               <th scope="col">Возрастное ограничение</th>
             </tr>
         </thead>
         <tbody>
+
             {% for movie in data %}
                 <tr>
-                    <th scope="row">1</th>
+
                     <td>{{ movie.movie_title }}</td>
                     <td>{{ movie.release_date }}</td>
                     <td>{{ movie.age_limit }}</td>
