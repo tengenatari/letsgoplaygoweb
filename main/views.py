@@ -4,6 +4,8 @@ from .forms import *
 from django.core.paginator import Paginator
 from .models import *
 
+
+
 models = {"movie": Movie, "genre": Genre, "client": Client, "row": Row, "session": Session, "hall": Hall,
           "ticket": Ticket}
 
@@ -201,4 +203,5 @@ def delete_model(request):
         table = models[request.POST['table']]
         print(table, table_id)
         table.objects.filter(pk=table_id).delete()
+
 
