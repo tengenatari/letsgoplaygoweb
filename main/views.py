@@ -1,3 +1,5 @@
+import datetime
+
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from .forms import *
@@ -5,8 +7,25 @@ from django.core.paginator import Paginator
 from .models import *
 from asgiref.sync import sync_to_async
 from django.db.models import ProtectedError
+from reportlab.pdfgen import canvas
+import os
+import main
+
+from reportlab.lib.units import cm
+from reportlab.pdfbase import pdfmetrics
+from reportlab.pdfbase.ttfonts import TTFont
+from reportlab.lib.styles import ParagraphStyle
+from reportlab.platypus import Paragraph, Frame
+from reportlab.graphics.shapes import Drawing, Line
+from reportlab.pdfgen.canvas import Canvas
+
+pth = os.path.dirname(main.__file__)
+
 models = {"movie": Movie, "genre": Genre, "client": Client, "row": Row, "session": Session, "hall": Hall,
           "ticket": Ticket}
+from django.db import connection
+
+cursor = connection.cursor()
 
 
 def get_pages(instance, page, model, kwargs):
@@ -45,7 +64,6 @@ def create(request, model):
     some = dict()
     some[f"{model}_id"] = 0
     return render(request, f'{model}_update.html', context={'form': form, model: some})
-
 
 def main(request):
     return render(request, 'base.html')
@@ -220,3 +238,78 @@ def delete_model(request):
             return render(request, f'{request.POST['table']}_error_protected.html')
     return redirect('/')
 
+
+
+def first_otchet(request):
+    cursor.execute('''SELECT DISTINCT
+main_movie.movie_id,
+main_movie.movie_title
+FROM main_movie INNER JOIN main_movie_genres ON
+	main_movie.movie_id = main_movie_genres.movie_id
+	AND main_movie_genres.genre_id IN
+		(SELECT 
+		 main_genre.genre_id
+		FROM main_genre INNER JOIN main_movie_genres ON
+			main_genre.genre_id = main_movie_genres.genre_id
+			INNER JOIN main_movie ON
+			main_movie_genres.movie_id = main_movie.movie_id
+			INNER JOIN main_session ON
+			main_session.movie_id_id = main_movie.movie_id
+			INNER JOIN main_ticket ON
+			main_ticket.session_id_id = main_session.session_id
+		GROUP BY
+			main_genre.genre_id,
+			main_genre.genre_title
+		ORDER BY 
+			COUNT(main_ticket.ticket_id) DESC
+		LIMIT 3)''')
+    rows = cursor.fetchall()
+
+    pdf = canvas.Canvas(f"{datetime.datetime.now()}.pdf")
+    pdf.setFont("Helvetica-Bold", 16)
+    pdf.drawString(50, 750, "Отчёт клиента")
+    y = 700
+    for row in rows:
+        pdf.drawString(50, y - 30, "Имя: " + str(row[0]))
+        pdf.drawString(50, y - 30, "Имя: " + str(row[1]))
+    pdf.save()
+
+
+def second_otchet(request):
+    cursor.execute('''SELECT 
+main_movie.movie_title, 
+COALESCE(ticket_count, 0) AS total_tickets 
+	FROM main_movie LEFT JOIN main_session ON
+	main_movie.movie_id = main_session.movie_id_id 
+	LEFT JOIN (
+		SELECT 
+			main_ticket.session_id_id, 
+			COUNT(*) AS ticket_count
+		FROM main_ticket 
+		GROUP BY main_ticket.session_id_id
+	) AS ticket_summary ON
+	main_session.session_id = ticket_summary.session_id_id
+ORDER BY
+	total_tickets DESC
+''')
+
+    rows = cursor.fetchall()
+
+    path = pth + f"\\static\\reports\\first{hash(datetime.datetime.now())}.pdf"
+    with open(path, "+w"):
+        pass
+    pdf = canvas.Canvas(path)
+
+    pdf.drawString(50, 750, "Отчёт клиента")
+    y = 700
+    pdf.setFont("Helvetica", 12)
+
+    pdfmetrics.registerFont(TTFont('DejaVuSerif', 'DejaVuSerif.ttf'))
+
+    # Various styles option are available, consult reportlab User Guide
+    style = ParagraphStyle('russian_text')
+    style.fontName = 'DejaVuSerif'
+    for i in range(len(rows)):
+        pdf.drawString(50 , y - 10*i, "aaaa: " + str(rows[i][0]))
+        pdf.drawString(80, y - 10*i, "Имя: " + str(rows[i][1]))
+    pdf.save()
