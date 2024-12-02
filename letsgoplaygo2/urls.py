@@ -19,6 +19,7 @@ from django.urls import path, re_path
 from main import views
 
 urlpatterns = [
+    path('update/<str:model>/0/', views.create),
     path('admin/', admin.site.urls),
     path('', views.main, name='home'),
     path('auth', views.auth, name='auth'),
@@ -34,5 +35,6 @@ urlpatterns = [
     path('update/client/<int:client_id>/', views.update_client, name='update_row'),
     path('delete/', views.delete_model, name='delete'),
     path('create/ticket/<int:session>/<int:row>/<int:seat>', views.create_ticket, name="create_ticket"),
+
 
 ]

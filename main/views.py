@@ -3,9 +3,8 @@ from django.contrib.auth import authenticate, login, logout
 from .forms import *
 from django.core.paginator import Paginator
 from .models import *
-
-
-
+from asgiref.sync import sync_to_async
+from django.db.models import ProtectedError
 models = {"movie": Movie, "genre": Genre, "client": Client, "row": Row, "session": Session, "hall": Hall,
           "ticket": Ticket}
 
@@ -34,6 +33,18 @@ def create_form(request, instance, instance_id, model):
     else:
         form_name, instance = form_name
     return form_name, instance
+
+
+def create(request, model):
+    form = Forms(models[model]).form()
+    if request.method == 'POST':
+        form = Forms(models[model]).form(request.POST)
+        if form.is_valid():
+            form = form.save()
+            return redirect(f'/update/{model}/{form.pk}')
+    some = dict()
+    some[f"{model}_id"] = 0
+    return render(request, f'{model}_update.html', context={'form': form, model: some})
 
 
 def main(request):
@@ -202,6 +213,10 @@ def delete_model(request):
         table_id = request.POST['id']
         table = models[request.POST['table']]
         print(table, table_id)
-        table.objects.filter(pk=table_id).delete()
+        try:
+            table.objects.filter(pk=table_id).delete()
 
+        except ProtectedError:
+            return render(request, f'{request.POST['table']}_error_protected.html')
+    return redirect('/')
 

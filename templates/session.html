@@ -6,7 +6,7 @@
     <table class="table">
         <thead>
             <tr>
-              <th scope="col">Номер</th>
+
               <th scope="col">Фильм</th>
               <th scope="col">Зал</th>
               <th scope="col">Время проведения</th>
@@ -14,9 +14,26 @@
             </tr>
         </thead>
         <tbody>
+        <form>
+                <th>
+                    <input name="movie_id__movie_title__icontains" class="form-control">
+                </th>
+                <th>
+                    <input name="hall_id__hall_title__icontains" class="form-control">
+                </th>
+                <th><input name="start_time__icontains" class="form-control"></th>
+            <th><input name="cost__icontains" class="form-control"></th>
+
+                <th>
+                    <button class=" btn btn-primary">Поиск</button>
+                </th>
+
+                    <td><a href="/update/hall/0" class="btn btn-primary">Создать</a></td>
+
+            </form>
             {% for session in data %}
                 <tr>
-                    <th scope="row">1</th>
+
                     <td>{{ session.movie_id }}</td>
                     <td>{{ session.hall_id }}</td>
                     <td>{{ session.start_time }}</td>
