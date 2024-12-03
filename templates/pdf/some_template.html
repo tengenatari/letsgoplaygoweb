@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <title>letsgoplaygo</title>
+</head>
+<body>
+    <h1> Отчет о самых популярных фильмах
+    </h1>
+    <table>
+    <thead>
+        <tr>
+            {% for title in titles %}
+                <th>
+                    {{ title }}
+                </th>
+            {% endfor %}
+        </tr>
+    </thead>
+    <tbody>
+        {% for row in table %}
+        <tr>
+        {% for element in row %}
+            <td> {{ element }}</td>
+            {% endfor %}
+
+        </tr>
+        {% endfor  %}
+    </tbody>
+    </table>
+
+ </body>
+</html>

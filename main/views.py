@@ -1,23 +1,18 @@
 import datetime
 
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, redirect, get_object_or_404, HttpResponse
 from django.contrib.auth import authenticate, login, logout
+from django.template.loader import render_to_string
 from .forms import *
 from django.core.paginator import Paginator
 from .models import *
 from asgiref.sync import sync_to_async
 from django.db.models import ProtectedError
-from reportlab.pdfgen import canvas
+
 import os
 import main
 
-from reportlab.lib.units import cm
-from reportlab.pdfbase import pdfmetrics
-from reportlab.pdfbase.ttfonts import TTFont
-from reportlab.lib.styles import ParagraphStyle
-from reportlab.platypus import Paragraph, Frame
-from reportlab.graphics.shapes import Drawing, Line
-from reportlab.pdfgen.canvas import Canvas
+from fpdf import FPDF, HTMLMixin
 
 pth = os.path.dirname(main.__file__)
 
@@ -26,6 +21,10 @@ models = {"movie": Movie, "genre": Genre, "client": Client, "row": Row, "session
 from django.db import connection
 
 cursor = connection.cursor()
+
+
+class HtmlPdf(FPDF, HTMLMixin):
+    pass
 
 
 def get_pages(instance, page, model, kwargs):
@@ -239,8 +238,7 @@ def delete_model(request):
     return redirect('/')
 
 
-
-def first_otchet(request):
+async def first_otchet(request):
     cursor.execute('''SELECT DISTINCT
 main_movie.movie_id,
 main_movie.movie_title
@@ -263,19 +261,21 @@ FROM main_movie INNER JOIN main_movie_genres ON
 		ORDER BY 
 			COUNT(main_ticket.ticket_id) DESC
 		LIMIT 3)''')
+
     rows = cursor.fetchall()
 
-    pdf = canvas.Canvas(f"{datetime.datetime.now()}.pdf")
-    pdf.setFont("Helvetica-Bold", 16)
-    pdf.drawString(50, 750, "Отчёт клиента")
-    y = 700
-    for row in rows:
-        pdf.drawString(50, y - 30, "Имя: " + str(row[0]))
-        pdf.drawString(50, y - 30, "Имя: " + str(row[1]))
-    pdf.save()
+    pdf = HtmlPdf()
+    pdf.add_page()
+    string = render_to_string('pdf\\some_template.html', context={'table': rows, "titles": ["Номер фильма", "Название фильма"]})
+    pdf.add_font('DejaVu', '', 'main\\static\\fonts\\DejaVuSansCondensed.ttf', uni=True)
+    pdf.add_font('DejaVu', 'B', 'main\\static\\fonts\\DejaVuSansCondensed-Bold.ttf', uni=True)
+    pdf.set_font('DejaVu', '', 14)
+    pdf.write_html(string)
+    pdf.output(f"main\\static\\reports\\first_{hash(datetime.datetime.now())}.pdf")
+    return redirect("/")
 
 
-def second_otchet(request):
+async def second_otchet(request):
     cursor.execute('''SELECT 
 main_movie.movie_title, 
 COALESCE(ticket_count, 0) AS total_tickets 
@@ -295,21 +295,49 @@ ORDER BY
 
     rows = cursor.fetchall()
 
-    path = pth + f"\\static\\reports\\first{hash(datetime.datetime.now())}.pdf"
-    with open(path, "+w"):
-        pass
-    pdf = canvas.Canvas(path)
+    pdf = HtmlPdf()
+    pdf.add_page()
+    string = render_to_string('pdf\\some_template.html', context={'table': rows, "titles": ["Название фильма", "Количество проданных билетов"]})
+    pdf.add_font('DejaVu', '', 'main\\static\\fonts\\DejaVuSansCondensed.ttf', uni=True)
+    pdf.add_font('DejaVu', 'B', 'main\\static\\fonts\\DejaVuSansCondensed-Bold.ttf', uni=True)
+    pdf.set_font('DejaVu', '', 14)
+    pdf.write_html(string)
+    pdf.output(f"main\\static\\reports\\second-{hash(datetime.datetime.now())}.pdf")
+    return redirect("/")
 
-    pdf.drawString(50, 750, "Отчёт клиента")
-    y = 700
-    pdf.setFont("Helvetica", 12)
 
-    pdfmetrics.registerFont(TTFont('DejaVuSerif', 'DejaVuSerif.ttf'))
+async def third_otchet(request):
+    await sync_to_async(cursor.execute)('''SELECT
+                    main_session.session_id,
+                    movie_title,
+                    hall_title,
+                    start_time,
+     SUM(num_seats),
+     (SELECT COUNT(ticket_id) FROM main_ticket WHERE main_ticket.session_id_id = main_session.session_id),
+                    SUM(num_seats) - (SELECT COUNT(ticket_id) FROM main_ticket WHERE main_ticket.session_id_id = main_session.session_id) 
+                    FROM main_session
+                    INNER JOIN main_movie ON
+                    main_session.movie_id_id = main_movie.movie_id
+                    INNER JOIN main_hall ON
+                    main_session.hall_id_id = main_hall.hall_id
+                    INNER JOIN main_row ON
+                    main_hall.hall_id = main_row.hall_id_id
+                    GROUP BY
+                    main_session.session_id,
+                    movie_title,
+                    hall_title,
+                    start_time,
+                    duration_time
+                    LIMIT 30''')
+    rows = cursor.fetchall()
 
-    # Various styles option are available, consult reportlab User Guide
-    style = ParagraphStyle('russian_text')
-    style.fontName = 'DejaVuSerif'
-    for i in range(len(rows)):
-        pdf.drawString(50 , y - 10*i, "aaaa: " + str(rows[i][0]))
-        pdf.drawString(80, y - 10*i, "Имя: " + str(rows[i][1]))
-    pdf.save()
+    pdf = HtmlPdf()
+    pdf.add_page()
+    string = await sync_to_async(render_to_string)('pdf\\some_template.html',
+                              context={'table': rows, "titles": ["Сеанс", "Название фильма", "Зал", "Дата проведения", "Количество мест всего", "Количество занятых мест", "Количество свободных мест"]})
+    pdf.add_font('DejaVu', '', 'main\\static\\fonts\\DejaVuSansCondensed.ttf', uni=True)
+    pdf.add_font('DejaVu', 'B', 'main\\static\\fonts\\DejaVuSansCondensed-Bold.ttf', uni=True)
+    pdf.set_font('DejaVu', '', 10)
+    await sync_to_async(pdf.write_html)(string)
+    pdf.output(f"main\\static\\reports\\third-{hash(datetime.datetime.now())}.pdf")
+    return redirect("/")

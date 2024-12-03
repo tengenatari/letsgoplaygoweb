@@ -69,8 +69,8 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'letsgoplaygo2.wsgi.application'
 
+ASGI_APPLICATION = 'letsgoplaygo2.asgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases

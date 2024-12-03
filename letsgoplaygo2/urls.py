@@ -36,7 +36,8 @@ urlpatterns = [
     path('delete/', views.delete_model, name='delete'),
     path('create/ticket/<int:session>/<int:row>/<int:seat>', views.create_ticket, name="create_ticket"),
     path('first', views.first_otchet),
-    path('second', views.second_otchet)
+    path('second', views.second_otchet),
+    path('third', views.third_otchet)
 
 
 ]
