@@ -65,7 +65,7 @@ def create(request, model):
     return render(request, f'{model}_update.html', context={'form': form, model: some})
 
 def main(request):
-    return render(request, 'base.html')
+    return redirect('/movie/1')
 
 
 def auth(request):
@@ -266,7 +266,7 @@ FROM main_movie INNER JOIN main_movie_genres ON
 
     pdf = HtmlPdf()
     pdf.add_page()
-    string = render_to_string('pdf\\some_template.html', context={'table': rows, "titles": ["Номер фильма", "Название фильма"]})
+    string = render_to_string('pdf\\some_template.html', context={'table': rows, "titles": ["Номер фильма", "Название фильма"], "main_title": "Отчет о самых популярных фильмах"})
     pdf.add_font('DejaVu', '', 'main\\static\\fonts\\DejaVuSansCondensed.ttf', uni=True)
     pdf.add_font('DejaVu', 'B', 'main\\static\\fonts\\DejaVuSansCondensed-Bold.ttf', uni=True)
     pdf.set_font('DejaVu', '', 14)
@@ -297,7 +297,7 @@ ORDER BY
 
     pdf = HtmlPdf()
     pdf.add_page()
-    string = render_to_string('pdf\\some_template.html', context={'table': rows, "titles": ["Название фильма", "Количество проданных билетов"]})
+    string = render_to_string('pdf\\some_template.html', context={'table': rows, "titles": ["Название фильма", "Количество проданных билетов"], "main_title": "Продажа билетов"})
     pdf.add_font('DejaVu', '', 'main\\static\\fonts\\DejaVuSansCondensed.ttf', uni=True)
     pdf.add_font('DejaVu', 'B', 'main\\static\\fonts\\DejaVuSansCondensed-Bold.ttf', uni=True)
     pdf.set_font('DejaVu', '', 14)
@@ -334,7 +334,7 @@ async def third_otchet(request):
     pdf = HtmlPdf()
     pdf.add_page()
     string = await sync_to_async(render_to_string)('pdf\\some_template.html',
-                              context={'table': rows, "titles": ["Сеанс", "Название фильма", "Зал", "Дата проведения", "Количество мест всего", "Количество занятых мест", "Количество свободных мест"]})
+                              context={'table': rows, "titles": ["Сеанс", "Название фильма", "Зал", "Дата проведения", "Количество мест всего", "Количество занятых мест", "Количество свободных мест"], "main_title": "Отчет о свободных местах"})
     pdf.add_font('DejaVu', '', 'main\\static\\fonts\\DejaVuSansCondensed.ttf', uni=True)
     pdf.add_font('DejaVu', 'B', 'main\\static\\fonts\\DejaVuSansCondensed-Bold.ttf', uni=True)
     pdf.set_font('DejaVu', '', 10)

@@ -30,7 +30,7 @@
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
               <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item">
-                  <a class="nav-link active" aria-current="page" href="#">Home</a>
+                  <a class="nav-link active" aria-current="page" href="/">Главная</a>
                 </li>
 
                 <li class="nav-item dropdown">
@@ -46,7 +46,18 @@
                     <li><a class="dropdown-item" href="/client/1">Клиенты</a></li>
                   </ul>
                 </li>
-                
+                <li class="nav-item dropdown">
+                  <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                      Отчеты
+                  </a>
+                  <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="/first">Отчет о популярных фильмах</a></li>
+                    <li><a class="dropdown-item" href="/second">Второй отчет</a></li>
+                    <li><a class="dropdown-item" href="/third">Подробный отчет о фильмах</a></li>
+
+
+                  </ul>
+                </li>
               </ul>
                   {% if user.is_authenticated %}
                       <ul class="navbar-nav  d-flex ">
