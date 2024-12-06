@@ -239,7 +239,7 @@ def delete_model(request):
 
 
 async def first_otchet(request):
-    cursor.execute('''SELECT DISTINCT
+    await sync_to_async(cursor.execute)('''SELECT DISTINCT
 main_movie.movie_id,
 main_movie.movie_title
 FROM main_movie INNER JOIN main_movie_genres ON
@@ -262,21 +262,21 @@ FROM main_movie INNER JOIN main_movie_genres ON
 			COUNT(main_ticket.ticket_id) DESC
 		LIMIT 3)''')
 
-    rows = cursor.fetchall()
+    rows = await sync_to_async(cursor.fetchall)()
 
     pdf = HtmlPdf()
     pdf.add_page()
-    string = render_to_string('pdf\\some_template.html', context={'table': rows, "titles": ["Номер фильма", "Название фильма"], "main_title": "Отчет о самых популярных фильмах"})
+    string = await sync_to_async(render_to_string)('pdf\\some_template.html', context={'table': rows, "titles": ["Номер фильма", "Название фильма"], "main_title": "Отчет о самых популярных фильмах"})
     pdf.add_font('DejaVu', '', 'main\\static\\fonts\\DejaVuSansCondensed.ttf', uni=True)
     pdf.add_font('DejaVu', 'B', 'main\\static\\fonts\\DejaVuSansCondensed-Bold.ttf', uni=True)
     pdf.set_font('DejaVu', '', 14)
     pdf.write_html(string)
-    pdf.output(f"main\\static\\reports\\first_{hash(datetime.datetime.now())}.pdf")
+    await sync_to_async(pdf.output)(f"main\\static\\reports\\first_{hash(datetime.datetime.now())}.pdf")
     return redirect("/")
 
 
 async def second_otchet(request):
-    cursor.execute('''SELECT 
+    await sync_to_async(cursor.execute)('''SELECT 
 main_movie.movie_title, 
 COALESCE(ticket_count, 0) AS total_tickets 
 	FROM main_movie LEFT JOIN main_session ON
@@ -293,16 +293,16 @@ ORDER BY
 	total_tickets DESC
 ''')
 
-    rows = cursor.fetchall()
+    rows = await sync_to_async(cursor.fetchall)()
 
     pdf = HtmlPdf()
     pdf.add_page()
-    string = render_to_string('pdf\\some_template.html', context={'table': rows, "titles": ["Название фильма", "Количество проданных билетов"], "main_title": "Продажа билетов"})
+    string = await sync_to_async(render_to_string)('pdf\\some_template.html', context={'table': rows, "titles": ["Название фильма", "Количество проданных билетов"], "main_title": "Продажа билетов"})
     pdf.add_font('DejaVu', '', 'main\\static\\fonts\\DejaVuSansCondensed.ttf', uni=True)
     pdf.add_font('DejaVu', 'B', 'main\\static\\fonts\\DejaVuSansCondensed-Bold.ttf', uni=True)
     pdf.set_font('DejaVu', '', 14)
-    pdf.write_html(string)
-    pdf.output(f"main\\static\\reports\\second-{hash(datetime.datetime.now())}.pdf")
+    await sync_to_async(pdf.write_html)(string)
+    await sync_to_async(pdf.output)(f"main\\static\\reports\\second-{hash(datetime.datetime.now())}.pdf")
     return redirect("/")
 
 
@@ -329,7 +329,7 @@ async def third_otchet(request):
                     start_time,
                     duration_time
                     LIMIT 30''')
-    rows = cursor.fetchall()
+    rows = await sync_to_async(cursor.fetchall)()
 
     pdf = HtmlPdf()
     pdf.add_page()
@@ -339,5 +339,5 @@ async def third_otchet(request):
     pdf.add_font('DejaVu', 'B', 'main\\static\\fonts\\DejaVuSansCondensed-Bold.ttf', uni=True)
     pdf.set_font('DejaVu', '', 10)
     await sync_to_async(pdf.write_html)(string)
-    pdf.output(f"main\\static\\reports\\third-{hash(datetime.datetime.now())}.pdf")
+    await sync_to_async(pdf.output)(f"main\\static\\reports\\third-{hash(datetime.datetime.now())}.pdf")
     return redirect("/")
