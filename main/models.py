@@ -1,24 +1,25 @@
 from enum import unique
 from types import NoneType
 
-from django.db import models
-from django.contrib.auth.models import AbstractUser
+
+from djongo import models
 # Create your models here.
 
 
 class Client(models.Model):
     client_id = models.AutoField(primary_key=True, null=False, unique=True)
-    name = models.CharField()
+    name = models.CharField(max_length=1024)
     birthday = models.DateField()
 
     def __str__(self):
+        
         return self.name.__str__()
 
 
 class Genre(models.Model):
     genre_id = models.AutoField(primary_key=True, null=False, unique=True)
 
-    genre_title = models.CharField(null=False)
+    genre_title = models.CharField(null=False, max_length=1024)
 
     def __str__(self):
         return self.genre_title.__str__()
@@ -27,7 +28,7 @@ class Genre(models.Model):
 class Movie(models.Model):
     movie_id = models.AutoField(primary_key=True, null=False, unique=True)
 
-    movie_title = models.CharField(null=False)
+    movie_title = models.CharField(null=False, max_length=1024)
     release_date = models.DateField()
     age_limit = models.PositiveIntegerField(null=False)
     duration_time = models.TimeField(null=False)
@@ -40,7 +41,7 @@ class Movie(models.Model):
 
 class Hall(models.Model):
     hall_id = models.AutoField(primary_key=True, null=False, unique=True)
-    hall_title = models.CharField(null=False)
+    hall_title = models.CharField(null=False, max_length=1024)
 
     def __str__(self):
         return self.hall_title.__str__()
